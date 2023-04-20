@@ -190,11 +190,6 @@ function WallCollider(x1, y1, x2, y2){
 
 
 
-
-
-
-
-
 function Ball(x, y, radius){
   Block.call(this, x, y, radius*2, radius*2);
   GameObject.call(this, x, y, spr_Barco);
@@ -698,8 +693,6 @@ function BeanStalkPlant(x, y, spr, img) {
 
         if (this.x < -16* this.xScl) {
             this.active = false;
-
-            console.log("Morreu");
         }
     }
 }

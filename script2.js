@@ -7,7 +7,8 @@ function createCloud(outScreen) {
     _cloud.depth = -2 + Math.random() * 4;
     _cloud.hspd = (-2 - Math.random() * 0.5 + _cloud.depth * 0.5) * 3;
     _cloud.xScl = 5 + Math.random() * 0.25 - _cloud.depth;
-    addList(_cloud, OBJECT.DRAW)
+    addList(_cloud, OBJECT.DRAW);
+    addList(_cloud, OBJECT.CLOUD);
     addList(_cloud, OBJECT.GAMEOBJECT);
 }
 for (var i = 0; i < 20; i++) {
@@ -19,7 +20,8 @@ function createBeanstalk(xx, yy) {
     var _inst = new BeanStalkPlant(xx, yy, spr_HittedBlock, 0);
     _inst.depth = -0.77 + (-0.5 + Math.random() * 1);
     _inst.hspd = -7;
-    addList(_inst, OBJECT.DRAW)
+    addList(_inst, OBJECT.DRAW);
+    addList(_inst, OBJECT.BEANSTALK);
     addList(_inst, OBJECT.GAMEOBJECT);
 }
 
@@ -55,14 +57,8 @@ function step() {
 
     frame += 0.05;
 
-    console.log(BeanStalkPlant.xScl);
 
     addY = Math.sin(frame) * 40;
-    // boat.vspd += 0.2;
-    // boat.x += boat.hspd;
-    // boat.y += boat.vspd;
-    //boat.hspd *= 0.9999;
-
     boat.y = height / 2 + addY - 50;
 
     tick++;
@@ -97,11 +93,11 @@ function step() {
     }
 
 
-    // if(boat.y > height/2){
-    // 	boat.y = height/2;
-    // 	boat.vspd *= -1;
-    // }
 
+    checkUpLists();
+    //for (var i = 0; i < objectLists[OBJECT.BEANSTALK].length; i++) {
+
+    //}
 
     updateList(OBJECT.GAMEOBJECT);
 
@@ -109,8 +105,7 @@ function step() {
 
     drawList(OBJECT.DRAW);
 
-    //boat.show();
-
+    
 
 
     // Black Border
