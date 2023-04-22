@@ -4,16 +4,16 @@
 
 // Creating Dust objects
 
-for(var i = 0; i < 0; i++){
-  var _block = new Block(randInt(0, width), randInt(0, height), randInt(20, 100), randInt(20, 100));
-  addList(_block, OBJECT.BLOCK);
-  addList(_block, OBJECT.DRAW)
-  addList(_block, OBJECT.GAMEOBJECT);
+for (var i = 0; i < 0; i++) {
+    var _block = new Block(randInt(0, width), randInt(0, height), randInt(20, 100), randInt(20, 100));
+    addList(_block, OBJECT.BLOCK);
+    addList(_block, OBJECT.DRAW)
+    addList(_block, OBJECT.GAMEOBJECT);
 }
 
 
 // Object Declaration
-boat = new Ball(-200, height-150, 40);
+boat = new Ball(-200, height - 150, 40);
 boat.hspd = 10;
 boat.depth = -20;
 boat.centerX = 20;
@@ -27,7 +27,7 @@ boat.weight = 10;
 
 
 
-bomb = new Ball(-200, height-500, 40);
+bomb = new Ball(-200, height - 500, 40);
 bomb.hspd = 3;
 bomb.depth = -20;
 bomb.centerX = 45;
@@ -44,7 +44,7 @@ bomb.vLoss = 0.6;
 // addList(bomb, OBJECT.DRAW);
 // addList(bomb, OBJECT.GAMEOBJECT);
 
-splinter = new Ball(100, height-200, 75);
+splinter = new Ball(100, height - 200, 75);
 splinter.hspd = 8;
 splinter.depth = -20;
 splinter.centerX = 302;
@@ -64,7 +64,7 @@ addList(splinter, OBJECT.BLOCK);
 addList(splinter, OBJECT.DRAW);
 addList(splinter, OBJECT.GAMEOBJECT);
 
-premierBall = new Ball(-200, height-500, 30);
+premierBall = new Ball(-200, height - 500, 30);
 premierBall.hspd = 10;
 premierBall.depth = -20;
 premierBall.centerX = 66;
@@ -87,8 +87,8 @@ addList(premierBall, OBJECT.DRAW);
 
 
 
-var balHeiLim =  height-(520+200);
-baleadeira = new Baleadeira(750, height-200);
+var balHeiLim = height - (520 + 200);
+baleadeira = new Baleadeira(750, height - 200);
 baleadeira.ammo = null;
 baleadeira.depth = -10;
 //addList(baleadeira, OBJECT.DRAW);
@@ -106,63 +106,63 @@ var timerShot = 0;
 var hasLanded = false;
 
 
-function step(){
-  // Background
-  ctx.fillStyle = "rgb(0,255,0)";
-  ctx.fillRect(0,0, width, height);
+function step() {
+    // Background
+    ctx.fillStyle = "rgb(0,255,0)";
+    ctx.fillRect(0, 0, width, height);
 
-  if(hasCollected){
-    if(baleadeira.y > balHeiLim){
-      baleadeira.y-=3;
-      baleadeira.x += 8*(Math.random() -0.5);
+    if (hasCollected) {
+        if (baleadeira.y > balHeiLim) {
+            baleadeira.y -= 3;
+            baleadeira.x += 8 * (Math.random() - 0.5);
+        }
+    } else {
+        if (baleadeira.ammo != null) {
+            hasCollected = true;
+        }
     }
-  } else {
-    if(  baleadeira.ammo != null){
-      hasCollected = true;
+
+    if (!hasShot) {
+        timerShot++;
+        if (splinter.hspd < 1 && timerShot > 100) {
+            hasShot = true;
+            premierBall.hspd = 30;
+            premierBall.vspd = -10;
+            addList(premierBall, OBJECT.GAMEOBJECT);
+        }
+    } else {
+        if (!hasLanded) {
+            if (Math.abs(premierBall.hspd) < 0.3) {
+                hasLanded = true;
+                premierBall.sprite = spr_OpenPremierBall;
+            }
+        }
     }
-  }
 
-  if(!hasShot){
-    timerShot++;
-    if(splinter.hspd < 1 && timerShot > 100){
-        hasShot = true;
-        premierBall.hspd = 30;
-        premierBall.vspd = -10;
-        addList(premierBall, OBJECT.GAMEOBJECT);
+
+
+    // Update all Gameobjects
+    updateList(OBJECT.GAMEOBJECT);
+
+    if (!hasShot) {
+        premierBall.x = splinter.x + splinter.r;
+        premierBall.y = splinter.y;
     }
-  } else {
-    if(!hasLanded){
-      if(Math.abs(premierBall.hspd) < 0.3){
-        hasLanded = true;
-        premierBall.sprite = spr_OpenPremierBall;
-      }
-    }
-  }
+    collisions();
+
+    // Draw all Drawnables
+    sortDepth();
+    drawList(OBJECT.DRAW);
+
+    cleanAllLists();
 
 
 
-  // Update all Gameobjects
-  updateList(OBJECT.GAMEOBJECT);
+    // Black Border
+    ctx.strokeStyle = "rgb(0,0,0)";
+    ctx.strokeRect(0, 0, width, height);
 
-  if(!hasShot){
-    premierBall.x = splinter.x + splinter.r;
-    premierBall.y = splinter.y;
-  }
-  collisions();
-
-  // Draw all Drawnables
-  sortDepth();
-  drawList(OBJECT.DRAW);
-
-  cleanAllLists();
-
-
-
-  // Black Border
-  ctx.strokeStyle = "rgb(0,0,0)";
-  ctx.strokeRect(0, 0, width, height);
-
-	window.requestAnimationFrame(step);
+    window.requestAnimationFrame(step);
 }
 
 window.requestAnimationFrame(step);

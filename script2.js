@@ -1,5 +1,5 @@
 
-
+ctx.font = "40px Fixedsys";
 
 
 function createCloud(outScreen) {
@@ -43,6 +43,24 @@ addList(boat, OBJECT.DRAW);
 
 
 
+var baleadeira = new Baleadeira(300, 400);
+baleadeira.ammo = boat;
+
+var boatFlying = false;
+
+
+if (Math.random() < 0.1) {
+    addList(baleadeira, OBJECT.GAMEOBJECT);
+    addList(baleadeira, OBJECT.DRAW);
+} else {
+    boat.hspd = 0;
+    boat.gravity = 0;
+    boatFlying = true;
+}
+
+
+
+
 var addY = 0;
 var frame = 0;
 var tick = 0;
@@ -57,9 +75,12 @@ function step() {
 
     frame += 0.05;
 
+    if (boatFlying) {
+        addY = Math.sin(frame) * 40;
+        boat.y = height / 2 + addY - 50;
+    }
+    boat.update();
 
-    addY = Math.sin(frame) * 40;
-    boat.y = height / 2 + addY - 50;
 
     tick++;
     if (tickHold < 50) {
@@ -77,17 +98,17 @@ function step() {
                 beanNum += Math.floor(Math.random() * 4);
             }
 
-            
+
             var beanX = (Math.random() * width) + width + 160;
-            var beanY = (height / 1.5) + (Math.random() * height/2);
+            var beanY = (height / 1.5) + (Math.random() * height / 2);
             for (var i = 0; i < beanNum; i++) {
                 createBeanstalk(beanX, beanY);
 
                 if (Math.random() < 0.3) {
-                    beanY += BeanStalkPlant.xScl*16;
+                    beanY += BeanStalkPlant.xScl * 16;
                 }
 
-                beanX += BeanStalkPlant.xScl*16 * Math.ceil(Math.random()*4);
+                beanX += BeanStalkPlant.xScl * 16 * Math.ceil(Math.random() * 4);
             }
         }
     }
@@ -95,9 +116,32 @@ function step() {
 
 
     checkUpLists();
-    //for (var i = 0; i < objectLists[OBJECT.BEANSTALK].length; i++) {
+    for (var i = 0; i < objectLists[OBJECT.BEANSTALK].length; i++) {
+        var beanStalkObj = objectLists[OBJECT.BEANSTALK][i];
+        if (beanStalkObj.hasDust) {
+            if (beanStalkObj.boundingBox.checkCollision(boat.boundingBox)) {
 
-    //}
+                beanStalkObj.hasDust = false;
+
+                snd_Hit.play();
+
+                boat.angSpd += -0.25 + Math.random() * 0.5;
+                beanStalkObj.vineSpeed = 0;
+
+                for (var j = 0; j < 3; j++) {
+                    _dust = new Dust(boat.x, boat.y);
+                    var xx = boat.x + Math.random() * boat.sprite.width + boat.sprite.width * boat.xScl * 0.5 - _dust.sprite.width * _dust.xScl;
+                    var yy = boat.y + Math.random() * boat.sprite.width + boat.sprite.height * boat.yScl * 0.5 - _dust.sprite.height * _dust.yScl;
+                    _dust.x = xx;
+                    _dust.y = yy;
+
+                    addList(_dust, OBJECT.GAMEOBJECT);
+                    addList(_dust, OBJECT.DRAW);
+                    addList(_dust, OBJECT.DUST);
+                }
+            }
+        }
+    }
 
     updateList(OBJECT.GAMEOBJECT);
 
@@ -105,7 +149,7 @@ function step() {
 
     drawList(OBJECT.DRAW);
 
-    
+
 
 
     // Black Border

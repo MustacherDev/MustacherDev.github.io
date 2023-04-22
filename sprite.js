@@ -1,105 +1,107 @@
 // Sprite OBJECT
-function Sprite(img, wid, hei, imgWid, imgHei){
-  this.img = img;
+function Sprite(img, wid, hei, imgWid, imgHei) {
+    this.img = img;
 
-  this.imgWid = imgWid;
-  this.imgHei = imgHei;
+    this.imgWid = imgWid;
+    this.imgHei = imgHei;
 
-  this.width = wid;
-  this.height = hei;
+    this.width = wid;
+    this.height = hei;
 
-  this.imgNumX = Math.floor(this.imgWid/this.width);
-  this.imgNumY = Math.floor(this.imgHei/this.height);
+    this.imgNumX = Math.floor(this.imgWid / this.width);
+    this.imgNumY = Math.floor(this.imgHei / this.height);
 
-  this.imgNum = this.imgNumX*this.imgNumY;
+    this.imgNum = this.imgNumX * this.imgNumY;
 
-  this.xoffset = 0;
-  this.yoffset = 0;
+    this.xoffset = 0;
+    this.yoffset = 0;
 
-
-  this.drawSimple = function(x, y, img, scl){
-    var imgx = img%this.imgNumX;
-    var imgy = Math.floor(img/this.imgNumX)%this.imgNumY;
-    ctx.drawImage(this.img, imgx*this.width, imgy*this.height, this.width, this.height, x-this.xoffset, y-this.yoffset, this.width*scl, this.height*scl);
-  }
-
-
-  this.draw = function(x, y, img, xscl, yscl, centerTransform){
-    // Image X and Y based on img number
-    var imgx = (img%this.imgNumX);
-    var imgy = (Math.floor(img/this.imgNumX)%this.imgNumY);
-
-
-    // Centralizing Transformations
-    let centerTrnsf = centerTransform || false;
-
-    let offx = this.xoffset;
-    let offy = this.yoffset;
-    if(centerTrnsf){
-      offx = this.width/2;
-      offy = this.height/2;
+    /// Draw sprite
+    this.drawSimple = function (x, y, img, scl) {
+        var imgx = img % this.imgNumX;
+        var imgy = Math.floor(img / this.imgNumX) % this.imgNumY;
+        ctx.drawImage(this.img, imgx * this.width, imgy * this.height, this.width, this.height, x - this.xoffset, y - this.yoffset, this.width * scl, this.height * scl);
     }
 
-    // Actual Transformations
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(xscl, yscl);
+    /// Draw sprite with separe scaling and centralizing option
+    this.draw = function (x, y, img, xscl, yscl, centerTransform) {
+        // Image X and Y based on img number
+        var imgx = (img % this.imgNumX);
+        var imgy = (Math.floor(img / this.imgNumX) % this.imgNumY);
 
-    ctx.drawImage(this.img, imgx*this.width, imgy*this.height, this.width, this.height, -offx, -offy, this.width, this.height);
 
-    ctx.restore();
-  }
+        // Centralizing Transformations
+        let centerTrnsf = centerTransform || false;
 
-  this.drawRot = function(x, y, img, xscl, yscl, ang, centerTransform){
+        let offx = this.xoffset;
+        let offy = this.yoffset;
+        if (centerTrnsf) {
+            offx = this.width / 2;
+            offy = this.height / 2;
+        }
 
-    var imgx = img%this.imgNumX;
-    var imgy = Math.floor(img/this.imgNumX)%this.imgNumY;
+        // Actual Transformations
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(xscl, yscl);
 
-    // Centralizing Transformations
-    let centerTrnsf = centerTransform || false;
+        ctx.drawImage(this.img, imgx * this.width, imgy * this.height, this.width, this.height, -offx, -offy, this.width, this.height);
 
-    let offx = this.xoffset;
-    let offy = this.yoffset;
-    if(centerTrnsf){
-      offx = this.width/2;
-      offy = this.height/2;
+        ctx.restore();
     }
 
-    // Actual Transformations
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(xscl, yscl);
-    ctx.rotate(ang);
+    /// Draw sprite with rotation
+    this.drawRot = function (x, y, img, xscl, yscl, ang, centerTransform) {
 
-    ctx.drawImage(this.img, imgx*this.width, imgy*this.height, this.width, this.height, -offx, -offy, this.width, this.height);
+        var imgx = img % this.imgNumX;
+        var imgy = Math.floor(img / this.imgNumX) % this.imgNumY;
 
-    ctx.restore();
-  }
+        // Centralizing Transformations
+        let centerTrnsf = centerTransform || false;
 
-  this.drawFix = function(x, y, img, xscl, yscl, ang, transfX, transfY, offSetX, offSetY){
+        let offx = this.xoffset;
+        let offy = this.yoffset;
+        if (centerTrnsf) {
+            offx = this.width / 2;
+            offy = this.height / 2;
+        }
 
-    var imgx = img%this.imgNumX;
-    var imgy = Math.floor(img/this.imgNumX)%this.imgNumY;
+        // Actual Transformations
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(xscl, yscl);
+        ctx.rotate(ang);
 
-    // Centralizing Transformations
+        ctx.drawImage(this.img, imgx * this.width, imgy * this.height, this.width, this.height, -offx, -offy, this.width, this.height);
 
-    let transX = transfX;
-    let transY = transfY;
-
-    let offx = (-offSetX + transX)*Math.abs(xscl);
-    let offy = (-offSetY + transY)*Math.abs(yscl);
-
-    // Actual Transformations
-    ctx.save();
-    ctx.translate(x + offx, y + offy);
-    ctx.scale(xscl, yscl);
-
-    if(ang != 0){
-      ctx.rotate(ang);
+        ctx.restore();
     }
 
-    ctx.drawImage(this.img, imgx*this.width, imgy*this.height, this.width, this.height, -transX, -transY, this.width, this.height);
+    /// Draw sprite with rotation and offset
+    this.drawFix = function (x, y, img, xscl, yscl, ang, transfX, transfY, offSetX, offSetY) {
 
-    ctx.restore();
-  }
+        var imgx = img % this.imgNumX;
+        var imgy = Math.floor(img / this.imgNumX) % this.imgNumY;
+
+        // Centralizing Transformations
+
+        let transX = transfX;
+        let transY = transfY;
+
+        let offx = (-offSetX + transX) * Math.abs(xscl);
+        let offy = (-offSetY + transY) * Math.abs(yscl);
+
+        // Actual Transformations
+        ctx.save();
+        ctx.translate(x + offx, y + offy);
+        ctx.scale(xscl, yscl);
+
+        if (ang != 0) {
+            ctx.rotate(ang);
+        }
+
+        ctx.drawImage(this.img, imgx * this.width, imgy * this.height, this.width, this.height, -transX, -transY, this.width, this.height);
+
+        ctx.restore();
+    }
 }
