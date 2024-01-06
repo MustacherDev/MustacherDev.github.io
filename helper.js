@@ -14,25 +14,62 @@ ctx.mozImageSmoothingEnabled = false;
 ctx.msImageSmoothingEnabled = false;
 ctx.imageSmoothingEnabled = false;
 
+// Function to get canvas transform scale
+function getCanvasTransformScale() {
+	var style = window.getComputedStyle(canvas);
+	var transform = style.getPropertyValue("transform");
+	
+	// Parse the matrix values from the transform property
+	var matrix = new DOMMatrix(transform);
+	var scaleX = matrix.a;
+	var scaleY = matrix.d;
 
+	return {
+		x: scaleX,
+		y: scaleY
+	};
+}
 
+function scaleCanvasContent() {
+	var aspectRatio = canvas.width / canvas.height;
+	var windowWidth = window.innerWidth;
+	var windowHeight = window.innerHeight;
 
+	var canvasScale = Math.min(windowWidth / canvas.width, windowHeight / canvas.height);
+
+	canvas.style.transform = "scale(" + canvasScale + ")";
+	canvas.style.transformOrigin = "top left";
+}
 
 
 // Mouse Initialization
 mouseX = 0;
 mouseY = 0;
-
+mouseXScreen = 0;
+mouseYScreen = 0;
+	
 //  MouseState = [Left, right, left first, right first]
 mouseState = [false, false, false, false];
 
 
 
 // Event Handlers
-canvas.addEventListener("mousemove", function (event) {
-    mouseX = event.offsetX;
-    mouseY = event.offsetY;
+canvas.addEventListener("mousemove", function(event){
+	var scl = getCanvasTransformScale();
+	var rect = canvas.getBoundingClientRect();
+	var scaleX = canvas.width / rect.width*scl.x;
+	var scaleY = canvas.height / rect.height*scl.y;
+	
+	mouseXScreen = event.offsetX;
+	mouseYScreen = event.offsetY;
+	
+	
+	mouseX = (event.offsetX*scaleX);
+	mouseY = (event.offsetY*scaleY);
 });
+
+ 
+
 
 canvas.addEventListener("mousedown", function (event) {
     // Detect first press

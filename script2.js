@@ -69,6 +69,10 @@ var tickHold = 20;
 boat.x = width / 2 - 150;
 
 function step() {
+	
+	scaleCanvasContent();
+	
+	
     // Background
     ctx.fillStyle = "rgb(150,180,250)";
     ctx.fillRect(0, 0, width, height);
@@ -149,8 +153,8 @@ function step() {
 
     drawList(OBJECT.DRAW);
 
-
-
+	console.log(mouseXScreen);
+	console.log(mouseYScreen);
 
     // Black Border
     //ctx.strokeStyle = "rgb(0,0,0)";
