@@ -1,40 +1,55 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0>
     <title>o_O</title>
-	<style>
+    <style>
         body, html {
             margin: 0;
             padding: 0;
             overflow: hidden;
         }
 
+
         .content {
             /* Add your content styles here */
             padding: 0px;
             background-color: #f0f0f0;
         }
-		
-		canvas {
-            width: 1900px; /* Set the desired width */
-            height: 1000px; /* Set the desired height */
-            border: 1px solid #000; /* Optional: Add a border for better visibility */
+
+        @font-face {
+            font-family: 'Fixedsys';
+            font-style: normal;
+            font-weight: normal;
+            font-smooth: never;
+            src: local('Fixedsys Excelsior 3.01'), url('FSEX300.woff') format('woff');
+        }
+
+
+        canvas {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            border: 0px solid #000; /* Optional: Add a border for better visibility */
         }
     </style>
-	
-    <div style = "text-align:center;">
-      <canvas id="Canvas"></canvas>
-    </div>
+    <canvas id="Canvas" ></canvas>
+    
+    <script src="init.js"></script>
     <script src="helper.js"></script>
+    <script src="helperMath.js"></script>
+    <script src="helperObj.js"></script>
+    <script src="input.js"></script>
     <script src="sprite.js"></script>
     <script src="data.js"></script>
     <script src="objects.js"></script>
-    <script src="script2.js"></script>
-  </head>
+    <script src="stateInit.js"></script>
+    <script src="stateMenu.js"></script>
+    <script src="script.js"></script>
+</head>
   <body>
-  
+
   </body>
 </html>

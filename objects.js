@@ -23,7 +23,65 @@ function BoundingBox(x, y, width, height) {
         ctx.strokeRect(this.x, this.y, this.width, this.height);
     };
 }
+// Block Collisions
+function aabbCollision(a, b) {
+    if (b.x2 - a.x1 > a.width + b.width || a.x2 - b.x1 > a.width + b.width) {
+        return false;
+    } else if (b.y2 - a.y1 > a.height + b.height || a.y2 - b.y1 > a.height + b.height) {
+        return false;
+    }
+    return true;
+}
 
+function blockCollision(a, b) {
+    if (aabbCollision(a, b)) {
+        var dx = a.x1 - b.x2;
+        var dx2 = a.x2 - b.x1;
+        var dy = a.y1 - b.y2;
+        var dy2 = a.y2 - b.y1;
+
+        if (Math.abs(dx2) < Math.abs(dx)) {
+            dx = dx2;
+        }
+
+        if (Math.abs(dy2) < Math.abs(dy)) {
+            dy = dy2;
+        }
+
+        var rest = a.weight / (a.weight + b.weight);
+        if (Math.abs(dx) < Math.abs(dy)) {
+            dx /= 2;
+            a.x -= (1 - rest) * dx;
+            b.x += rest * dx;
+
+            a.hspd = (a.hspd + b.hspd) * (1 - rest);
+            b.hspd = (a.hspd + b.hspd) * (rest);
+        } else {
+            dy /= 2;
+            a.y -= (1 - rest) * dy;
+            b.y += rest * dy;
+
+            a.vspd = (a.vspd + b.vspd) * (1 - rest);
+            b.vspd = (a.vspd + b.vspd) * (rest);
+        }
+    }
+}
+
+function collisions() {
+    var _len = objectLists[OBJECT.BLOCK].length;
+
+    for (var i = 0; i < _len; i++) {
+        objectLists[OBJECT.BLOCK][i].updatePos();
+    }
+
+    for (var i = 0; i < _len; i++) {
+        var blockA = objectLists[OBJECT.BLOCK][i];
+        for (var j = i + 1; j < _len; j++) {
+            var blockB = objectLists[OBJECT.BLOCK][j];
+            blockCollision(blockA, blockB);
+        }
+    }
+}
 
 
 // Base Object
@@ -86,7 +144,7 @@ function TextObject(x, y, text) {
 
 
 function Block(x, y, wid, hei) {
-    GameObject.call(this, x, y, spr_BaleaBody);
+    GameObject.call(this, x, y, sprites[SPR.BALEAB]);
 
     this.width = wid;
     this.height = hei;
@@ -250,7 +308,7 @@ function WallCollider(x1, y1, x2, y2) {
 
 function Ball(x, y, radius) {
     Block.call(this, x, y, radius * 2, radius * 2);
-    GameObject.call(this, x, y, spr_Barco);
+    GameObject.call(this, x, y, sprites[SPR.BOAT]);
 
 
 
@@ -406,7 +464,7 @@ function Ball(x, y, radius) {
 }
 
 function Wave(x, y) {
-    GameObject.call(this, x, y, spr_Wave);
+    GameObject.call(this, x, y, sprites[SPR.WAVE]);
 
     this.life = 300;
 
@@ -427,21 +485,21 @@ function Wave(x, y) {
 
 
 function Cloud(x, y) {
-    GameObject.call(this, x, y, spr_Cloud);
+    GameObject.call(this, x, y, sprites[SPR.CLOUD]);
     this.xScl = 5;
 }
 
 Cloud.prototype = Object.create(GameObject.prototype);
 
 function BigCloud(x, y) {
-    GameObject.call(this, x, y, spr_BigCloud);
+    GameObject.call(this, x, y, sprites[SPR.BIGCLOUD]);
 }
 
 BigCloud.prototype = Object.create(GameObject.prototype);
 
 
 function Baleadeira(x, y) {
-    GameObject.call(this, x, y, spr_Balea);
+    GameObject.call(this, x, y, sprites[SPR.BALEA]);
 
     this.xScl = 10;
     this.yScl = this.xScl;
@@ -463,7 +521,7 @@ function Baleadeira(x, y) {
 
             if (this.holding) {
                 ctx.fillStyle = "rgb(200, 200, 200)";
-                if (mouseState[0]) {
+                if (mouseState[0][0]) {
                     var xx = this.x + (8 * this.xScl);
                     var yy = this.y + (3 * this.yScl);
 
@@ -510,7 +568,7 @@ function Baleadeira(x, y) {
 
         this.sprite.drawRot(this.x, this.y, 0, this.xScl, this.yScl, this.ang, false);
         for (var i = 0; i < 5; i++) {
-            spr_BaleaBody.drawRot(this.x, this.y + ((32 + (16 * i)) * this.yScl), this.body[i], this.xScl, this.yScl, this.ang, false);
+            sprites[SPR.BALEAB].drawRot(this.x, this.y + ((32 + (16 * i)) * this.yScl), this.body[i], this.xScl, this.yScl, this.ang, false);
         }
 
     }
@@ -546,7 +604,7 @@ function Baleadeira(x, y) {
                 this.ammo.vspd += (dy / dist) * stretch / 1000;
             }
 
-            if (mouseState[0]) {
+            if (mouseState[0][0]) {
                 if (this.holding) {
                     this.ammo.x = mouseX;
                     this.ammo.y = mouseY;
@@ -671,7 +729,7 @@ function FiuFiu(x, y, spr, img) {
 FiuFiu.prototype = Object.create(GameObject.prototype);
 
 function Dust(x, y) {
-    GameObject.call(this, x, y, spr_Dust);
+    GameObject.call(this, x, y, sprites[SPR.DUST]);
     this.life = randInt(100, 400);
 
     this.xScl = randInt(4, 10);
@@ -717,8 +775,8 @@ function BeanStalkPlant(x, y, spr, img) {
 
     this.img = img;
 
-    this.spriteHead = spr_BeanstalkHead;
-    this.spriteVine = spr_Vine;
+    this.spriteHead = sprites[SPR.BEANSTALK];
+    this.spriteVine = sprites[SPR.VINE];
 
     this.boundingBox = new BoundingBox(this.x, this.y, this.xScl*12, this.yScl*12);
 
@@ -739,7 +797,7 @@ function BeanStalkPlant(x, y, spr, img) {
 
         // Vine rise animation
 
-        
+
         var vineNum = Math.floor(this.vineY);
         var vineOffset = ((this.vineY) - vineNum) * 16 * this.yScl;
 

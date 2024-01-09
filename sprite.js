@@ -1,3 +1,7 @@
+
+
+
+
 // Sprite OBJECT
 function Sprite(img, wid, hei, imgWid, imgHei) {
     this.img = img;
@@ -15,6 +19,17 @@ function Sprite(img, wid, hei, imgWid, imgHei) {
 
     this.xoffset = 0;
     this.yoffset = 0;
+
+    this.setSubimg = function(wid, hei){
+      this.width = wid;
+      this.height = hei;
+
+      this.imgNumX = Math.floor(this.imgWid / this.width);
+      this.imgNumY = Math.floor(this.imgHei / this.height);
+
+      this.imgNum = this.imgNumX * this.imgNumY;
+    }
+
 
     /// Draw sprite
     this.drawSimple = function (x, y, img, scl) {
@@ -104,4 +119,14 @@ function Sprite(img, wid, hei, imgWid, imgHei) {
 
         ctx.restore();
     }
+}
+
+
+
+function createSprite(img){
+    return new Sprite(img, img.naturalWidth, img.naturalHeight, img.naturalWidth, img.naturalHeight);
+}
+
+function createSpriteExt(img, wid, hei){
+  return new Sprite(img, wid, hei, img.naturalWidth, img.naturalHeight);
 }
