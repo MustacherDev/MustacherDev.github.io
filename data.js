@@ -20,22 +20,13 @@ const SPR = Object.freeze(new Enum(
     "BALEA",
     "BALEAB",
     "DUST",
-    "WAVE",
     "BIGCLOUD",
     "CLOUD",
-    "BOMB",
-    "SPLINTER",
-    "PREMIER",
-    "PREMIEROPEN",
-    "GALOS",
-    "JIRO",
-    "NAI",
-    "FRANGO",
-    "XAROP",
-    "SPEEDY",
     "BEANSTALK",
     "VINE",
     "HITBLOCK",
+    "SITEICONS",
+    "ROPEFRAME",
     "TOTAL"
 ));
 
@@ -43,22 +34,13 @@ var imgPaths = [  "Barco.png",
   "Baleadeira.png",
   "BaleadeiraBody.png",
   "Dust.png",
-  "Wave.png",
   "NuvemGrande.png",
   "NuvemNormal.png",
-  "Bomb.png",
-  "splinterBall.png",
-  "pokebola.png",
-  "pokebolaaberta.png",
-  "granjaFull3.png",
-  "jiro.png",
-  "Queen_Nai.png",
-  "Frango.png",
-  "Xarop.png",
-  "Ligeirinho.png",
   "beanstalkHead.png",
   "vine.png",
-  "hittedBlock.png"
+  "hittedBlock.png",
+  "siteIcons.png",
+  "ropeFrame.png"
 ];
 
 var need2Load = imgPaths.length;
@@ -78,8 +60,9 @@ function loadSprites() {
 
         sprites[SPR.BALEAB].setSubimg(16, 16);
         sprites[SPR.DUST].setSubimg(16,16);
-        sprites[SPR.GALOS].setSubimg(20, 16);
         sprites[SPR.BEANSTALK].setSubimg(16, 16);
+        sprites[SPR.SITEICONS].setSubimg(64, 64);
+        sprites[SPR.ROPEFRAME].setSubimg(16, 16);
 
         spritesLoaded = true;
     }

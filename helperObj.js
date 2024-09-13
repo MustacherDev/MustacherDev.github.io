@@ -10,7 +10,11 @@ const OBJECT = Object.freeze(new Enum(
     "DUST",
     "WAVE",
     "CLOUD",
+    "BIGCLOUD",
     "BEANSTALK",
+    "SITETARGET",
+    "BOAT",
+    "BALEADEIRA",
     "TOTAL"
 ));
 
@@ -43,12 +47,13 @@ function checkUpLists() {
 }
 
 // Update all objects from the list
-function updateList(type) {
+function updateList(type, dt) {
     var _len = objectLists[type].length;
     for (var i = 0; i < _len; i++) {
         if (objectLists[type][i].active) {
-            objectLists[type][i].update();
+            objectLists[type][i].update(dt);
         } else {
+            objectLists[type][i].onDestroy();
             objectLists[type].splice(i, 1);
             i--;
             _len--;
@@ -60,18 +65,25 @@ function updateList(type) {
 function drawList(type) {
     var _len = objectLists[type].length;
     for (var i = 0; i < _len; i++) {
-        if (objectLists[type][i].active) {
-            objectLists[type][i].show();
-        } else {
-            objectLists[type].splice(i, 1);
-            i--;
-            _len--;
-        }
+        objectLists[type][i].draw(ctx);
+    }
+}
+
+// Draw all objects from the list
+function pushObjectsDrawList(type) {
+    var _len = objectLists[type].length;
+    for (var i = 0; i < _len; i++) {
+        objectLists[type][i].pushDrawList();
     }
 }
 
 function addList(obj, type) {
     objectLists[type].push(obj);
+}
+
+function addObject(obj){
+  objectLists[obj.type].push(obj);
+  objectLists[OBJECT.GAMEOBJECT].push(obj);
 }
 
 function sortDepth() {
